@@ -57,7 +57,7 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       user-select: none;
-      cursor: default;
+      cursor: pointer;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       overflow: hidden;
     }
@@ -182,6 +182,14 @@
     </div>
 
   </div>
+
+  <script>
+    document.querySelectorAll('.display-card').forEach(function(card, index) {
+      card.addEventListener('click', function() {
+        try { window.top.postMessage({ type: 'ocSwitchPart', partIndex: index }, '*'); } catch(e) {}
+      });
+    });
+  </script>
 
 </body>
 </html>
