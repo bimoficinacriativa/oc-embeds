@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Capa — Solicitação Licença Estudantil Revit (MAPA INT)</title>
+  <link rel="preload" as="image" href="../banners/licenca-int.jpg">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      perspective: 1200px;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      aspect-ratio: 12 / 5;
+      border-radius: 16px;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s;
+      will-change: transform;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      --x: 50%;
+      --y: 50%;
+      --bg-x: 50%;
+      --bg-y: 50%;
+    }
+
+    .card:hover {
+      box-shadow: 0 20px 48px rgba(255, 97, 46, 0.28), 0 0 0 1px rgba(255, 97, 46, 0.08);
+    }
+
+    .card img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: translateZ(0);
+    }
+
+    /* Glow suave seguindo o cursor */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at var(--x) var(--y),
+        rgba(255, 255, 255, 0.35) 0%,
+        rgba(255, 97, 46, 0.20) 25%,
+        transparent 55%
+      );
+      mix-blend-mode: overlay;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Faixa holographic arco-íris */
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255, 219, 112, 0.45) 40%,
+        rgba(255, 97, 46, 0.45) 48%,
+        rgba(132, 50, 255, 0.45) 55%,
+        transparent 65%
+      );
+      background-size: 250% 250%;
+      background-position: var(--bg-x) var(--bg-y);
+      mix-blend-mode: color-dodge;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .card:hover::before,
+    .card:hover::after {
+      opacity: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition: none !important; transform: none !important; }
+      .card::before, .card::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <img src="../banners/licenca-int.jpg" alt="Curso MAPA da Eficiência para Interiores — Solicitação Licença Estudantil Revit">
+  </div>
+
+  <script>
+    (function () {
+      const card = document.getElementById('card');
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return;
+
+      let raf = null;
+      function update(x, y, w, h) {
+        const cx = w / 2, cy = h / 2;
+        const rx = ((y - cy) / cy) * -5;
+        const ry = ((x - cx) / cx) * 7;
+        card.style.setProperty('--x', x + 'px');
+        card.style.setProperty('--y', y + 'px');
+        card.style.setProperty('--bg-x', (x / w) * 100 + '%');
+        card.style.setProperty('--bg-y', (y / h) * 100 + '%');
+        card.style.transform = `perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      }
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => update(x, y, rect.width, rect.height));
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
+        card.style.setProperty('--x', '50%');
+        card.style.setProperty('--y', '50%');
+        card.style.setProperty('--bg-x', '50%');
+        card.style.setProperty('--bg-y', '50%');
+      });
+    })();
+  </script>
+</body>
+</html>
